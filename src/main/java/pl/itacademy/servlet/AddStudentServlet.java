@@ -1,5 +1,6 @@
 package pl.itacademy.servlet;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.itacademy.model.Student;
 import pl.itacademy.service.StudentService;
 
@@ -12,7 +13,11 @@ import java.io.PrintWriter;
 
 @WebServlet(urlPatterns = "/addStudent")
 public class AddStudentServlet extends HttpServlet {
+
     StudentService studentService = new StudentService();
+
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -23,7 +28,7 @@ public class AddStudentServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        studentService.addStudent(new Student(name, surname, email, password));
+        studentService.addStudent(new Student(name, surname, email, encoder.encode(password)));
         out.println("<html><body><p>Student had been added successfully</></br>");
         out.println("name: " + name + " surname " + surname + " index no " + email);
         out.println("</body></html>");
